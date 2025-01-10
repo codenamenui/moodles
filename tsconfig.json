@@ -12,6 +12,12 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "app/screens/AddMoodScreen.s",
+    "app/screens/CalendarScreen.js",
+    "app/screens/HomeScreen.js",
+    "app/index.tsx",
+    "metro.config.js",
+    "nativewind-env.d.ts"
   ]
 }
