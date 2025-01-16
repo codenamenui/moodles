@@ -1,23 +1,21 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "app/screens/AddMoodScreen.s",
-    "app/screens/CalendarScreen.js",
-    "app/screens/HomeScreen.js",
-    "app/index.tsx",
-    "metro.config.js",
-    "nativewind-env.d.ts"
-  ]
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "strict": true,
+        "paths": {
+            "@/*": ["./*"]
+        }
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.tsx",
+        ".expo/types/**/*.ts",
+        "expo-env.d.ts",
+        "app/pages/AddMoodScreen.s",
+        "app/pages/CalendarScreen.js",
+        "app/pages/HomeScreen.js",
+        "app/index.tsx",
+        "metro.config.js",
+        "nativewind-env.d.ts"
+    ]
 }

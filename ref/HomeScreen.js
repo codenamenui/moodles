@@ -4,17 +4,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { verifyInstallation } from "nativewind";
 
 export default function HomeScreen({ navigation }) {
-    verifyInstallation();
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <Image source={require("../assets/logo.png")} style={styles.logo} />
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => navigation.navigate("Calendar")}
             >
-                <Text className="text-red-50">Welcome! Cldwaick to enter</Text>
+                <Text className="text-red-500">Welcome! Cldwaick to enter</Text>
             </TouchableOpacity>
-        </SafeAreaView>
+        </View>
     );
 }
 
