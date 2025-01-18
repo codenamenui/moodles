@@ -7,11 +7,15 @@ import {
     ImageBackground,
     Dimensions,
 } from "react-native";
-import { Image } from "expo-image";
+import { usePlaySound } from "@/app/utils/playSound";
 
 const { height } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
+    const playClickSound = usePlaySound(
+        require("@/app/assets/sounds/click.mp3")
+    );
+
     return (
         <ImageBackground
             source={require("@/app/assets/images/homepage.png")}
@@ -22,7 +26,10 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.contentContainer}>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={() => navigation.navigate("Calendar")}
+                        onPress={() => {
+                            playClickSound(); // Play the sound
+                            navigation.navigate("Calendar"); // Navigate to Calendar
+                        }}
                     >
                         <Text style={styles.buttonText}>{"Welcome back!"}</Text>
                         <Text style={styles.buttonText}>
@@ -49,17 +56,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         alignItems: "center",
         width: 300,
-        marginBottom: height * 0.15, // Position content from bottom
-    },
-    welcomeText: {
-        fontSize: 32,
-        color: "#000000",
-        marginBottom: 30,
-        textAlign: "center",
-        fontFamily: "MilkyMania",
-        textShadowColor: "rgba(0, 0, 0, 0.3)",
-        textShadowOffset: { width: 2, height: 2 },
-        textShadowRadius: 5,
+        marginBottom: height * 0.25, // Position content from bottom
     },
     button: {
         paddingVertical: 15,

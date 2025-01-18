@@ -77,7 +77,7 @@ export default function AddMoodScreen({ navigation }) {
 
     async function playSound() {
         const { sound } = await Audio.Sound.createAsync(
-            require("../assets/sounds/click.wav")
+            require("../assets/sounds/click.mp3")
         );
         setSound(sound);
         await sound.playAsync();

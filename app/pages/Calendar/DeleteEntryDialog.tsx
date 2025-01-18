@@ -1,3 +1,4 @@
+import { usePlaySound } from "@/app/utils/playSound";
 import React from "react";
 import {
     Modal,
@@ -9,12 +10,20 @@ import {
 } from "react-native";
 
 const DeleteEntryDialog = ({ visible, onClose, onConfirm, date }) => {
+    const playPopSound = usePlaySound(require("@/app/assets/sounds/pop.mp3"));
+    const playSuccessSound = usePlaySound(
+        require("@/app/assets/sounds/success.mp3")
+    );
+
     return (
         <Modal
             transparent={true}
             visible={visible}
             animationType="fade"
-            onRequestClose={onClose}
+            onRequestClose={() => {
+                playPopSound();
+                onClose();
+            }}
         >
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContent}>
@@ -26,13 +35,19 @@ const DeleteEntryDialog = ({ visible, onClose, onConfirm, date }) => {
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             style={[styles.button, styles.cancelButton]}
-                            onPress={onClose}
+                            onPress={() => {
+                                playPopSound();
+                                onClose();
+                            }}
                         >
                             <Text style={styles.cancelButtonText}>Cancel</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.button, styles.deleteButton]}
-                            onPress={onConfirm}
+                            onPress={() => {
+                                playSuccessSound();
+                                onConfirm();
+                            }}
                         >
                             <Text style={styles.deleteButtonText}>Delete</Text>
                         </TouchableOpacity>

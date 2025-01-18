@@ -14,6 +14,8 @@ import {
 import { moods } from "@/app/data/constants";
 import DuplicateMoodDialog from "./DuplicateMoodDialog";
 import DeleteEntryDialog from "./DeleteEntryDialog";
+import { usePlaySound } from "@/app/utils/playSound";
+import React from "react";
 
 type Day = {
     mood: number;
@@ -46,6 +48,14 @@ export default function Calendar({ navigation }) {
     const [showDuplicateError, setShowDuplicateError] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState(null);
+
+    const playClickSound = usePlaySound(
+        require("@/app/assets/sounds/click.mp3")
+    );
+    const playPopSound = usePlaySound(require("@/app/assets/sounds/pop.mp3"));
+    const playErrorSound = usePlaySound(
+        require("@/app/assets/sounds/error_sound.mp3")
+    );
 
     useEffect(() => {
         load();
@@ -222,168 +232,189 @@ export default function Calendar({ navigation }) {
     };
 
     const handleAddMood = () => {
-        const today = new Date().toISOString().split("T")[0];
-        const existingEntry = calendar.find((entry) =>
-            entry.date.startsWith(today)
+        const today = new Date();
+        const todayFormatted = `${today.getFullYear()}-${(today.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
+
+        const existingEntry = calendar.find(
+            (entry) => entry.date === todayFormatted
         );
 
         if (existingEntry) {
+            playErrorSound();
             setShowDuplicateError(true);
         } else {
+            playPopSound();
             navigation.navigate("AddMood");
         }
     };
 
     return (
-        <ScrollView style={styles.scrollContainer}>
-            <ImageBackground
-                source={require("@/app/assets/images/bg.png")}
-                style={styles.background}
-                resizeMode="cover"
-            >
-                <View style={styles.container}>
-                    <View style={styles.headerContainer}>
-                        <Image
-                            source={require("@/app/assets/images/app_name.png")}
-                            style={styles.appNameImage}
-                        />
-                    </View>
-
-                    <View style={styles.monthNavigation}>
-                        <TouchableOpacity
-                            onPress={goToPreviousMonth}
-                            style={styles.navButton}
-                        >
+        <>
+            <ScrollView style={styles.scrollContainer}>
+                <ImageBackground
+                    source={require("@/app/assets/images/bg.png")}
+                    style={styles.background}
+                    resizeMode="cover"
+                >
+                    <View style={styles.container}>
+                        <View style={styles.headerContainer}>
                             <Image
-                                source={require("@/app/assets/images/bk_button.png")}
-                                style={styles.navButtonImage}
+                                source={require("@/app/assets/images/app_name.png")}
+                                style={styles.appNameImage}
                             />
-                        </TouchableOpacity>
-                        <Text style={styles.monthYearText}>
-                            {currentDate.toLocaleString("default", {
-                                month: "long",
-                                year: "numeric",
-                            })}
-                        </Text>
-                        <TouchableOpacity
-                            onPress={goToNextMonth}
-                            style={styles.navButton}
-                        >
-                            <Image
-                                source={require("@/app/assets/images/fwd_button.png")}
-                                style={styles.navButtonImage}
-                            />
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.calendar}>
-                        <View style={styles.weekdayHeader}>
-                            {WEEKDAYS.map((day) => (
-                                <Text key={day} style={styles.weekdayText}>
-                                    {day}
-                                </Text>
-                            ))}
                         </View>
 
-                        <View style={styles.daysGrid}>
-                            {getCalendarDays().map((day, index) => (
-                                <View key={index}>{renderDay(day)}</View>
-                            ))}
-                        </View>
-                    </View>
-
-                    <View style={styles.moodSummaryCard}>
-                        <Text style={styles.summaryTitle}>
-                            Month Mood Summary
-                        </Text>
-                        <View style={styles.moodGrid}>
-                            {moods.map((mood, index) => {
-                                const count =
-                                    getMoodCountsForCurrentMonth()[index] || 0;
-                                return (
-                                    <View
-                                        key={index}
-                                        style={styles.moodSummaryItem}
-                                    >
-                                        <Image
-                                            source={mood.url}
-                                            style={styles.summaryMoodIcon}
-                                        />
-                                        <Text style={styles.moodCount}>
-                                            {count}
-                                        </Text>
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    </View>
-
-                    <View style={styles.dailyEntriesSection}>
-                        <Text style={styles.sectionTitle}>Daily Entries</Text>
-                        {getCurrentMonthEntries().map((entry, index) => (
-                            <View key={index} style={styles.dailyCard}>
-                                <View style={styles.dailyCardHeader}>
-                                    <Image
-                                        source={getMoodInfo(entry.mood).url}
-                                        style={styles.dailyMoodIcon}
-                                    />
-                                    <Text style={styles.dailyDate}>
-                                        {formatDate(entry.date)}
-                                    </Text>
-                                    <TouchableOpacity
-                                        style={styles.deleteEntryButton}
-                                        onPress={() => {
-                                            setSelectedEntry(entry);
-                                            setShowDeleteDialog(true);
-                                        }}
-                                    >
-                                        <Image
-                                            source={require("@/app/assets/images/trash.png")}
-                                            style={styles.deleteEntryIcon}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                {entry.note && (
-                                    <Text style={styles.dailyNote}>
-                                        {entry.note}
-                                    </Text>
-                                )}
-                            </View>
-                        ))}
-                        {getCurrentMonthEntries().length === 0 && (
-                            <Text style={styles.noEntriesText}>
-                                No mood entries for this month
+                        <View style={styles.monthNavigation}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    playClickSound();
+                                    goToPreviousMonth();
+                                }}
+                                style={styles.navButton}
+                            >
+                                <Image
+                                    source={require("@/app/assets/images/bk_button.png")}
+                                    style={styles.navButtonImage}
+                                />
+                            </TouchableOpacity>
+                            <Text style={styles.monthYearText}>
+                                {currentDate.toLocaleString("default", {
+                                    month: "long",
+                                    year: "numeric",
+                                })}
                             </Text>
-                        )}
-                    </View>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    playClickSound();
+                                    goToNextMonth();
+                                }}
+                                style={styles.navButton}
+                            >
+                                <Image
+                                    source={require("@/app/assets/images/fwd_button.png")}
+                                    style={styles.navButtonImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
 
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            style={styles.addButton}
-                            onPress={handleAddMood}
-                        >
-                            <Image
-                                source={require("@/app/assets/images/add_button.png")}
-                                style={styles.addButtonImage}
-                            />
-                        </TouchableOpacity>
+                        <View style={styles.calendar}>
+                            <View style={styles.weekdayHeader}>
+                                {WEEKDAYS.map((day) => (
+                                    <Text key={day} style={styles.weekdayText}>
+                                        {day}
+                                    </Text>
+                                ))}
+                            </View>
+
+                            <View style={styles.daysGrid}>
+                                {getCalendarDays().map((day, index) => (
+                                    <View key={index}>{renderDay(day)}</View>
+                                ))}
+                            </View>
+                        </View>
+
+                        <View style={styles.moodSummaryCard}>
+                            <Text style={styles.summaryTitle}>
+                                Month Mood Summary
+                            </Text>
+                            <View style={styles.moodGrid}>
+                                {moods.map((mood, index) => {
+                                    const count =
+                                        getMoodCountsForCurrentMonth()[index] ||
+                                        0;
+                                    return (
+                                        <View
+                                            key={index}
+                                            style={styles.moodSummaryItem}
+                                        >
+                                            <Image
+                                                source={mood.url}
+                                                style={styles.summaryMoodIcon}
+                                            />
+                                            <Text style={styles.moodCount}>
+                                                {count}
+                                            </Text>
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        </View>
+
+                        <View style={styles.dailyEntriesSection}>
+                            <Text style={styles.sectionTitle}>
+                                Daily Entries
+                            </Text>
+                            {getCurrentMonthEntries().map((entry, index) => (
+                                <View key={index} style={styles.dailyCard}>
+                                    <View style={styles.dailyCardHeader}>
+                                        <Image
+                                            source={getMoodInfo(entry.mood).url}
+                                            style={styles.dailyMoodIcon}
+                                        />
+                                        <Text style={styles.dailyDate}>
+                                            {formatDate(entry.date)}
+                                        </Text>
+                                        <TouchableOpacity
+                                            style={styles.deleteEntryButton}
+                                            onPress={() => {
+                                                playPopSound();
+                                                setSelectedEntry(entry);
+                                                setShowDeleteDialog(true);
+                                            }}
+                                        >
+                                            <Image
+                                                source={require("@/app/assets/images/trash.png")}
+                                                style={styles.deleteEntryIcon}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                    {entry.note && (
+                                        <Text style={styles.dailyNote}>
+                                            {entry.note}
+                                        </Text>
+                                    )}
+                                </View>
+                            ))}
+                            {getCurrentMonthEntries().length === 0 && (
+                                <Text style={styles.noEntriesText}>
+                                    No mood entries for this month
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
-                <DuplicateMoodDialog
-                    visible={showDuplicateError}
-                    onClose={() => setShowDuplicateError(false)}
-                />
-                <DeleteEntryDialog
-                    visible={showDeleteDialog}
-                    onClose={() => {
-                        setShowDeleteDialog(false);
-                        setSelectedEntry(null);
+                    <DuplicateMoodDialog
+                        visible={showDuplicateError}
+                        onClose={() => setShowDuplicateError(false)}
+                    />
+                    <DeleteEntryDialog
+                        visible={showDeleteDialog}
+                        onClose={() => {
+                            setShowDeleteDialog(false);
+                            setSelectedEntry(null);
+                        }}
+                        onConfirm={() => handleDeleteEntry(selectedEntry)}
+                        date={
+                            selectedEntry ? formatDate(selectedEntry.date) : ""
+                        }
+                    />
+                </ImageBackground>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => {
+                        handleAddMood();
                     }}
-                    onConfirm={() => handleDeleteEntry(selectedEntry)}
-                    date={selectedEntry ? formatDate(selectedEntry.date) : ""}
-                />
-            </ImageBackground>
-        </ScrollView>
+                >
+                    <Image
+                        source={require("@/app/assets/images/add_button.png")}
+                        style={styles.addButtonImage}
+                    />
+                </TouchableOpacity>
+            </View>
+        </>
     );
 }
 
@@ -396,12 +427,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         height: "100%",
-        // justifyContent: "center",
     },
     headerContainer: {
         alignItems: "center",
         width: "100%",
         marginBottom: 10,
+        marginTop: 30,
     },
     appNameImage: {
         transform: [{ scale: 1.25 }],
@@ -419,25 +450,23 @@ const styles = StyleSheet.create({
     },
     navButton: {
         padding: 8,
-        borderRadius: 12,
+        borderRadius: 20,
         width: 40,
         height: 40,
         justifyContent: "center",
         alignItems: "center",
     },
     navButtonImage: {
-        transform: [{ scale: 0.75 }],
+        width: 120,
+        height: 120,
     },
     calendar: {
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        backgroundColor: "#fff",
         margin: 16,
-        borderRadius: 15,
-        padding: 8,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        borderRadius: 25,
+        padding: 12,
+        borderWidth: 1,
+        borderColor: "rgba(0, 0, 0, 0.1)",
     },
     weekdayHeader: {
         flexDirection: "row",
@@ -455,48 +484,41 @@ const styles = StyleSheet.create({
     daysGrid: {
         flexDirection: "row",
         flexWrap: "wrap",
-        paddingVertical: 4,
+        paddingVertical: 8,
     },
     dayCell: {
-        width: DAY_SIZE - 3,
+        width: DAY_SIZE - 4,
         height: DAY_SIZE,
         justifyContent: "center",
         alignItems: "center",
         padding: 4,
         position: "relative",
+        borderRadius: 15,
     },
     dateNumber: {
         position: "absolute",
-        top: 2,
-        right: 2,
+        top: 4,
+        right: 4,
         fontSize: 10,
         fontFamily: "MilkyMania",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        paddingHorizontal: 4,
+        paddingVertical: 2,
+        borderRadius: 8,
     },
     moodIndicator: {
+        position: "absolute",
+        right: 15,
+        top: 8,
         width: 25,
         height: 25,
         marginTop: 8,
     },
     buttonContainer: {
-        flexDirection: "row",
         position: "absolute",
         right: 20,
         bottom: 20,
-        alignItems: "center",
-        gap: 12,
-    },
-    deleteButton: {
-        backgroundColor: "#ff4757",
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        justifyContent: "center",
-        alignItems: "center",
-        elevation: 5,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
+        zIndex: 999,
     },
     addButton: {
         width: 60,
@@ -504,30 +526,18 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         justifyContent: "center",
         alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-    },
-    buttonText: {
-        fontSize: 32,
-        fontWeight: "bold",
-        color: "#ff6a88",
-        fontFamily: "MilkyMania",
     },
     scrollContainer: {
+        position: "relative",
         flex: 1,
     },
     moodSummaryCard: {
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        backgroundColor: "#fff",
         margin: 16,
-        borderRadius: 15,
+        borderRadius: 25,
         padding: 16,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        borderWidth: 1,
+        borderColor: "rgba(0, 0, 0, 0.1)",
     },
     summaryTitle: {
         fontFamily: "MilkyMania",
@@ -545,6 +555,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         padding: 8,
+        backgroundColor: "rgba(255, 255, 255, 0.6)",
+        borderRadius: 15,
+        minWidth: 60,
     },
     summaryMoodIcon: {
         width: 40,
@@ -567,20 +580,17 @@ const styles = StyleSheet.create({
         color: "#333",
     },
     dailyCard: {
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        borderRadius: 15,
+        backgroundColor: "#fff",
+        borderRadius: 25,
         padding: 16,
         marginBottom: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        borderWidth: 1,
+        borderColor: "rgba(0, 0, 0, 0.1)",
     },
     dailyCardHeader: {
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
         flexDirection: "row",
         alignItems: "center",
+        backgroundColor: "transparent",
     },
     dailyMoodIcon: {
         width: 40,
@@ -598,6 +608,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#666",
         marginTop: 8,
+        padding: 8,
+        backgroundColor: "rgba(255, 255, 255, 0.6)",
+        borderRadius: 12,
     },
     noEntriesText: {
         fontFamily: "MilkyMania",
@@ -610,9 +623,14 @@ const styles = StyleSheet.create({
     deleteEntryButton: {
         padding: 8,
         marginLeft: 8,
+        borderRadius: 20,
     },
     deleteEntryIcon: {
-        width: 50,
-        height: 50,
+        width: 70,
+        height: 70,
+    },
+    addButtonImage: {
+        width: 140,
+        height: 140,
     },
 });

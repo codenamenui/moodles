@@ -1,3 +1,4 @@
+import { usePlaySound } from "@/app/utils/playSound";
 import React from "react";
 import {
     Modal,
@@ -10,12 +11,17 @@ import {
 } from "react-native";
 
 const DuplicateMoodDialog = ({ visible, onClose }) => {
+    const playPopSound = usePlaySound(require("@/app/assets/sounds/pop.mp3"));
+
     return (
         <Modal
             transparent={true}
             visible={visible}
             animationType="fade"
-            onRequestClose={onClose}
+            onRequestClose={() => {
+                playPopSound();
+                onClose();
+            }}
         >
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContent}>
@@ -29,7 +35,10 @@ const DuplicateMoodDialog = ({ visible, onClose }) => {
                     </Text>
                     <TouchableOpacity
                         style={styles.closeButton}
-                        onPress={onClose}
+                        onPress={() => {
+                            playPopSound();
+                            onClose();
+                        }}
                     >
                         <Text style={styles.closeButtonText}>OK</Text>
                     </TouchableOpacity>

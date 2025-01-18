@@ -11,12 +11,26 @@ import {
     ScrollView,
 } from "react-native";
 import { moods } from "@/app/data/constants";
+import { usePlaySound } from "@/app/utils/playSound";
 
 const AddMoodPage = ({ navigation }) => {
     const [currentMoodIndex, setCurrentMoodIndex] = useState(0);
     const [selectedMood, setSelectedMood] = useState(null);
     const [note, setNote] = useState("");
     const [isNoteSaved, setIsNoteSaved] = useState(false);
+    const playClickSound = usePlaySound(
+        require("@/app/assets/sounds/click.mp3")
+    );
+    const playSwooshSound = usePlaySound(
+        require("@/app/assets/sounds/swoosh.mp3")
+    );
+    const playPopSound = usePlaySound(require("@/app/assets/sounds/pop.mp3"));
+    const playSuccessSound = usePlaySound(
+        require("@/app/assets/sounds/success.mp3")
+    );
+    const playTypingSound = usePlaySound(
+        require("@/app/assets/sounds/typing_sound.mp3")
+    );
 
     const handlePrevMood = () => {
         setCurrentMoodIndex((prev) =>
@@ -74,7 +88,10 @@ const AddMoodPage = ({ navigation }) => {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <TouchableOpacity
                     style={styles.homeButton}
-                    onPress={() => navigation.navigate("Calendar")}
+                    onPress={() => {
+                        playSwooshSound();
+                        navigation.navigate("Calendar");
+                    }}
                 >
                     <Image
                         source={require("@/app/assets/images/home_button.png")}
@@ -94,7 +111,12 @@ const AddMoodPage = ({ navigation }) => {
                         </Text>
 
                         <View style={styles.moodNavigator}>
-                            <TouchableOpacity onPress={handlePrevMood}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    playClickSound();
+                                    handlePrevMood();
+                                }}
+                            >
                                 <Image
                                     source={require("@/app/assets/images/bk_button.png")}
                                     style={styles.arrowButton}
@@ -113,7 +135,12 @@ const AddMoodPage = ({ navigation }) => {
                                 </View>
                             </View>
 
-                            <TouchableOpacity onPress={handleNextMood}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    playClickSound();
+                                    handleNextMood();
+                                }}
+                            >
                                 <Image
                                     source={require("@/app/assets/images/fwd_button.png")}
                                     style={styles.arrowButton}
@@ -124,7 +151,10 @@ const AddMoodPage = ({ navigation }) => {
                         <View style={styles.addButtonContainer}>
                             <TouchableOpacity
                                 style={styles.selectButton}
-                                onPress={handleSelectMood}
+                                onPress={() => {
+                                    playPopSound();
+                                    handleSelectMood();
+                                }}
                             >
                                 <Image
                                     source={require("@/app/assets/images/add_button.png")}
@@ -160,12 +190,22 @@ const AddMoodPage = ({ navigation }) => {
                                     style={styles.noteInput}
                                     multiline
                                     value={note}
-                                    onChangeText={setNote}
+                                    onChangeText={(e) => {
+                                        playTypingSound();
+                                        setNote(e);
+                                    }}
                                     placeholder="Type your thoughts here..."
                                 />
                                 <TouchableOpacity
                                     style={styles.saveButton}
-                                    onPress={handleSave}
+                                    onPress={() => {
+                                        if (isNoteSaved) {
+                                            playSuccessSound();
+                                        } else {
+                                            playPopSound();
+                                        }
+                                        handleSave();
+                                    }}
                                 >
                                     <Image
                                         source={require("@/app/assets/images/save.png")}
@@ -180,9 +220,10 @@ const AddMoodPage = ({ navigation }) => {
                                 </Text>
                                 <TouchableOpacity
                                     style={styles.saveButton}
-                                    onPress={() =>
-                                        navigation.navigate("Calendar")
-                                    }
+                                    onPress={() => {
+                                        playSuccessSound();
+                                        navigation.navigate("Calendar");
+                                    }}
                                 >
                                     <Image
                                         source={require("@/app/assets/images/save.png")}
@@ -211,8 +252,8 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 20,
         left: 20,
-        width: 60,
-        height: 60,
+        width: 100,
+        height: 100,
         zIndex: 1,
     },
     buttonImage: {
@@ -235,18 +276,19 @@ const styles = StyleSheet.create({
     moodNavigator: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
+        // justifyContent: "center",
         marginVertical: 40,
+        gap: -20,
     },
     arrowButton: {
-        width: 60,
-        height: 60,
+        width: 120,
+        height: 120,
     },
     currentMoodContainer: {
         alignItems: "center",
         borderRadius: 20,
         padding: 20,
-        width: 200,
+        width: 150,
     },
     moodImage: {
         width: 120,
@@ -265,8 +307,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     selectButton: {
-        width: 80,
-        height: 80,
+        width: 120,
+        height: 120,
     },
     selectButtonImage: {
         width: "100%",
@@ -318,8 +360,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     saveButton: {
-        width: 80,
-        height: 80,
+        width: 100,
+        height: 100,
     },
     saveButtonImage: {
         width: "100%",
