@@ -435,7 +435,8 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     appNameImage: {
-        transform: [{ scale: 1.25 }],
+        height: 80,
+        width: 200,
     },
     monthNavigation: {
         flexDirection: "row",
