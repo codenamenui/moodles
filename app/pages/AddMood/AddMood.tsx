@@ -88,7 +88,7 @@ const AddMoodPage = ({ navigation }) => {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <TouchableOpacity
                     style={styles.homeButton}
-                    onPress={() => {
+                    onPressIn={() => {
                         playSwooshSound();
                         navigation.navigate("Calendar");
                     }}
@@ -112,7 +112,7 @@ const AddMoodPage = ({ navigation }) => {
 
                         <View style={styles.moodNavigator}>
                             <TouchableOpacity
-                                onPress={() => {
+                                onPressn={() => {
                                     playClickSound();
                                     handlePrevMood();
                                 }}
@@ -136,7 +136,7 @@ const AddMoodPage = ({ navigation }) => {
                             </View>
 
                             <TouchableOpacity
-                                onPress={() => {
+                                onPressIn={() => {
                                     playClickSound();
                                     handleNextMood();
                                 }}
@@ -151,7 +151,7 @@ const AddMoodPage = ({ navigation }) => {
                         <View style={styles.addButtonContainer}>
                             <TouchableOpacity
                                 style={styles.selectButton}
-                                onPress={() => {
+                                onPressIn={() => {
                                     playPopSound();
                                     handleSelectMood();
                                 }}
@@ -198,7 +198,7 @@ const AddMoodPage = ({ navigation }) => {
                                 />
                                 <TouchableOpacity
                                     style={styles.saveButton}
-                                    onPress={() => {
+                                    onPressIn={() => {
                                         if (isNoteSaved) {
                                             playSuccessSound();
                                         } else {
@@ -220,7 +220,7 @@ const AddMoodPage = ({ navigation }) => {
                                 </Text>
                                 <TouchableOpacity
                                     style={styles.saveButton}
-                                    onPress={() => {
+                                    onPressIn={() => {
                                         playSuccessSound();
                                         navigation.navigate("Calendar");
                                     }}

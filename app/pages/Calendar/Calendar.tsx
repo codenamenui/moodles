@@ -268,7 +268,7 @@ export default function Calendar({ navigation }) {
 
                         <View style={styles.monthNavigation}>
                             <TouchableOpacity
-                                onPress={() => {
+                                onPressIn={() => {
                                     playClickSound();
                                     goToPreviousMonth();
                                 }}
@@ -286,7 +286,7 @@ export default function Calendar({ navigation }) {
                                 })}
                             </Text>
                             <TouchableOpacity
-                                onPress={() => {
+                                onPressIn={() => {
                                     playClickSound();
                                     goToNextMonth();
                                 }}
@@ -358,7 +358,7 @@ export default function Calendar({ navigation }) {
                                         </Text>
                                         <TouchableOpacity
                                             style={styles.deleteEntryButton}
-                                            onPress={() => {
+                                            onPressIn={() => {
                                                 playPopSound();
                                                 setSelectedEntry(entry);
                                                 setShowDeleteDialog(true);
@@ -404,7 +404,7 @@ export default function Calendar({ navigation }) {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => {
+                    onPressIn={() => {
                         handleAddMood();
                     }}
                 >

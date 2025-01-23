@@ -35,7 +35,7 @@ const DuplicateMoodDialog = ({ visible, onClose }) => {
                     </Text>
                     <TouchableOpacity
                         style={styles.closeButton}
-                        onPress={() => {
+                        onPressIn={() => {
                             playPopSound();
                             onClose();
                         }}

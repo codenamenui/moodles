@@ -35,7 +35,7 @@ const DeleteEntryDialog = ({ visible, onClose, onConfirm, date }) => {
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             style={[styles.button, styles.cancelButton]}
-                            onPress={() => {
+                            onPressIn={() => {
                                 playPopSound();
                                 onClose();
                             }}
@@ -44,7 +44,7 @@ const DeleteEntryDialog = ({ visible, onClose, onConfirm, date }) => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.button, styles.deleteButton]}
-                            onPress={() => {
+                            onPressIn={() => {
                                 playSuccessSound();
                                 onConfirm();
                             }}

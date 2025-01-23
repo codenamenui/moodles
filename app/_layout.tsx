@@ -9,7 +9,10 @@ export default function RootLayout() {
         MilkyMania: require("./assets/fonts/MilkyMania.otf"),
     });
 
-    const playSound = usePlaySound(require("@/app/assets/sounds/BGM.mp3"));
+    const playSound = usePlaySound(
+        require("@/app/assets/sounds/BGM.mp3"),
+        true
+    );
 
     useEffect(() => {
         playSound();

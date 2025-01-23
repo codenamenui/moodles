@@ -26,7 +26,7 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.contentContainer}>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={() => {
+                        onPressIn={() => {
                             playClickSound(); // Play the sound
                             navigation.navigate("Calendar"); // Navigate to Calendar
                         }}
